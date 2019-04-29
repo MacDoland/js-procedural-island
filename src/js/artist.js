@@ -10,7 +10,7 @@ class Artist {
 							key: definition.name,
 							material: new THREE.MeshStandardMaterial({
 								color: 0xFFFFFF,
-								vertexColors: THREE.VertexColors,
+								/*vertexColors: THREE.VertexColors,*/
 								roughness: 1.0,
 								flatShading: true,
 								morphTargets: true

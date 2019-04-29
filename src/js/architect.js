@@ -338,7 +338,7 @@ class Architect {
 			}
 
 			geometry.addAttribute('color', new THREE.BufferAttribute( vertexColors, 3 ) );
-			return geometry;
+			return vertexColors;
 		}
 
 
@@ -357,6 +357,21 @@ class Architect {
 		return vertexFrom.clone();
 	}
 
+	*AnimateFloat(from, to, duration){
+		let startDate = new Date();
+		let elapsedSeconds = 0;
+		let currentValue = from;
+		let difference = to - from;
+		let progress = 0;
+
+		while( elapsedSeconds < duration){
+			elapsedSeconds = (new Date() - startDate) / 1000;
+			progress = elapsedSeconds / duration;
+			currentValue = from + difference * progress;
+
+			yield currentValue;
+		}
+	}
 
 	*MorphVertices(verticesFrom, verticesTo, steps) {
 		let verticesCurrent = verticesFrom.slice(0);//clone array;

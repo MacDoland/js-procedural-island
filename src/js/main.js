@@ -133,7 +133,7 @@ import data from '../data/data.json';
 			mesh.updateMorphTargets();
 
 
-			let generator = architect.AnimateFloat(0, 1, 0.5);
+			let generator = architect.AnimateFloat(0, 1, 1);
 
 			let process = (generator) => {
 				let progress = generator.next();

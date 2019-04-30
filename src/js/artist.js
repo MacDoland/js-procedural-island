@@ -63,7 +63,7 @@ class Artist {
 					},
 					morphTargetInfluences: {
 						value: []
-					},
+					}
 				}
 			]),
 			vertexShader: `
@@ -133,10 +133,6 @@ class Artist {
 					
 					vec3 transformedNormal = normalMatrix * objectNormal;
 
-					#ifndef FLAT_SHADED
-						vNormal = normalize( transformedNormal );
-					#endif
-					
 					vec4 mvPosition = modelViewMatrix * vec4( transformed, 1.0 );
 
 					vUv.y = (transformed.z * 4.0) / bboxMax.y ;
@@ -173,6 +169,8 @@ class Artist {
 
 			  
 			  void main() {
+				color = vec4(colorSea, 1.0);
+
 				if( vUv.y <= 0.005)
 				{
 					color = vec4(colorSea, 1.0);
@@ -189,7 +187,7 @@ class Artist {
 				{
 					color = vec4(colorGrass, 1.0);
 				}
-				else if( vUv.y > 0.4 && vUv.y <= 0.9)
+				else if( vUv.y > 0.4 && vUv.y <= 0.85)
 				{
 					color = vec4(colorRock, 1.0);
 				}
@@ -197,15 +195,29 @@ class Artist {
 					color = vec4(colorSnow, 1.0);
 				}
 
-				if(angle > 40.0){
-				//	color = vec4(colorRock, 1.0);
+
+				if (angle > 1.0 && angle < 15.0 && vUv.y > 0.005 && vUv.y < 0.05) {
+					color = vec4(colorSand, 1.0);
 				}
+
+				if (angle >= 0.0 && angle < 40.0 && vUv.y > 0.2 && vUv.y < 0.4) {
+					color = vec4(colorGrass, 1.0);
+				}
+
+				if (angle >= 40.0 && vUv.y > 0.05 && vUv.y < 0.8) {
+					color = vec4(colorRock, 1.0);
+				}
+
+				if (vUv.y > 0.85) {
+					color = vec4(colorSnow, 1.0);
+				}
+
+			
 
 				gl_FragColor = color * vec4(vLighting, 1.0);
 				  
 			  }
 			`,
-			flatShading: true,
 			morphTargets: true,
 			morphNormals: true,
 			lights: true

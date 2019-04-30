@@ -434,3 +434,4 @@ class Architect {
 }
 
 export default Architect;
+

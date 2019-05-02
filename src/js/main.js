@@ -3,6 +3,7 @@ import Artist from './artist';
 import Camera from './camera';
 import ControlPanel from './control-panel';
 import Controls from './controls';
+import Erosion from './erosion';
 import HeightMap from './height-map';
 import Renderer from './renderer';
 import Scene from './scene';
@@ -22,25 +23,34 @@ import data from '../data/data.json';
 	let heightMap = new HeightMap(document.getElementById('noise-canvas'));
 	let meshes = [];
 
+
+	
 	data.objects.forEach((item) => {
 		let geometry = architect.get(item.geometry).geometry;
 		geometry.computeBoundingBox();
 
-		let material = artist.customIslandMaterial(geometry.boundingBox);
+		let material = artist.get(item.material).material;
 
-		//material = artist.get(item.material).material;
-
+		if (item.material === 'default' ) {
+			material = artist.customIslandMaterial(geometry.boundingBox);
+		}
+		
 		let mesh = new THREE.Mesh(geometry, material);
 
 		mesh.receiveShadow = true;
 		mesh.castShadow = true;
-		mesh.rotation.x = Utility.radians(-90);
-		mesh.rotation.z = Utility.radians(-270);
 		scene.scene.add(mesh);
 		meshes.push(mesh);
+
+		//mesh.position.set(new THREE.Vector3(item.position.x, item.position.y, item.position.z));
+
+		mesh.position.x = item.position.x;
+		mesh.position.y = item.position.y;
+		mesh.position.z = item.position.z;
+		mesh.rotation.x = Utility.radians(-90);
+		mesh.rotation.z = Utility.radians(-270);
 	});
 
-	//noiseImageContext.putImageData(imageData.imageData, imageData.x, imageData.y, imageData.dirtyX, imageData.dirtyY, imageData.dirtyWidth, imageData.dirtyHeight);
 
 	controls.addEventListener('change', (update) => {
 		controlPanel.updateCameraPosition(update.position);
@@ -146,14 +156,17 @@ import data from '../data/data.json';
 					})
 				}
 				else {
-				mesh.morphTargetInfluences[0] = 1;
-				mesh.geometry.dispose();
-				mesh.geometry = geometry;
-				mesh.morphTargetInfluences[0] = 0;
-				generationInProgress = false;
+					mesh.morphTargetInfluences[0] = 1;
+					mesh.geometry.dispose();
+					mesh.geometry = geometry;
+					mesh.morphTargetInfluences[0] = 0;
+					generationInProgress = false;
+
+			//		let erosion = new Erosion();
+			//		erosion.erode(mesh.geometry, 512, 512);
+			//		mesh.geometry.attributes.position.needsUpdate = true;
 				}
 			};
-
 			process(generator);
 		}
 	});

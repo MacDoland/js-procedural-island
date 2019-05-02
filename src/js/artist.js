@@ -5,6 +5,11 @@ class Artist {
 		if (materialDef && materialDef.length) {
 			materialDef = materialDef.map((definition) => {
 				switch (definition.type) {
+					case 'ocean': 
+						return {
+							key: definition.name,
+							material: this.water()
+						};
 					default:
 						return {
 							key: definition.name,
@@ -16,7 +21,6 @@ class Artist {
 								morphTargets: true
 							})
 						};
-						break;
 				}
 			});
 		}
@@ -30,6 +34,10 @@ class Artist {
 		});
 	}
 
+	water(){
+		return new THREE.MeshLambertMaterial({color: 0x021d33, transparent: true, opacity: 0.85});
+	}
+
 	customIslandMaterial(boundingBox) {
 		return new THREE.ShaderMaterial({
 			uniforms: THREE.UniformsUtils.merge([
@@ -38,19 +46,19 @@ class Artist {
 				{
 					diffuseMaterial: { type: "c", value: new THREE.Color(1, 0, 0) },
 					colorSea: {
-						value: new THREE.Color(0x4667A4)
+						value: new THREE.Color(0x9b7952)
 					},
 					colorSand: {
-						value: new THREE.Color(0xD7BC81)
+						value: new THREE.Color(0xECBA82)
 					},
 					colorGrass: {
-						value: new THREE.Color(0x6CA469)
+						value: new THREE.Color(0x297045)
 					},
 					colorRock: {
-						value: new THREE.Color(0x9C9C9C)
+						value: new THREE.Color(0x313138)
 					},
 					colorSnow: {
-						value: new THREE.Color(0xFFFFFF)
+						value: new THREE.Color(0xF9F8F8)
 					},
 					bboxMin: {
 						value: boundingBox.min
@@ -144,11 +152,9 @@ class Artist {
 					
 					gl_Position = projectionMatrix * mvPosition;
 
-					vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+					vec3 ambientLight = vec3(0.5, 0.5, 0.5);
 					vec3 directionalLightColor = vec3(1, 1, 1);
 					vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-
-					transformedNormal = normalMatrix * objectNormal;
 
 					float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
 					vLighting = ambientLight + (directionalLightColor * directional);
@@ -160,10 +166,11 @@ class Artist {
 			uniform vec3 colorGrass;
 			uniform vec3 colorRock;
 			uniform vec3 colorSnow;
-		
+
 			varying vec2 vUv;
 			varying float angle;
-    		varying vec3 vLighting;
+			varying vec3 vLighting;
+			
 
 			vec4 color;
 
@@ -175,41 +182,38 @@ class Artist {
 				{
 					color = vec4(colorSea, 1.0);
 				}
-				else if( vUv.y > 0.005 && vUv.y <= 0.05)
+				else if( vUv.y > 0.005 && vUv.y <= 0.01)
 				{
 					color = vec4(mix(colorSand, colorSand, vUv.y), 1.0);
 				}
-				else if( vUv.y > 0.05 && vUv.y <= 0.1)
+				else if( vUv.y > 0.01 && vUv.y <= 0.1)
 				{
 					color = vec4(mix(colorSand, colorGrass, vUv.y), 1.0);
 				}
-				else if( vUv.y > 0.1 && vUv.y <= 0.4)
+				else if( vUv.y > 0.1 && vUv.y <= 0.5)
 				{
 					color = vec4(colorGrass, 1.0);
 				}
-				else if( vUv.y > 0.4 && vUv.y <= 0.85)
+				else if( vUv.y > 0.5)
 				{
 					color = vec4(colorRock, 1.0);
 				}
-				else {
-					color = vec4(colorSnow, 1.0);
-				}
 
 
-				if (angle > 1.0 && angle < 15.0 && vUv.y > 0.005 && vUv.y < 0.05) {
+				if (angle > 0.0 && angle < 20.0 && vUv.y > 0.005 && vUv.y < 0.2) {
 					color = vec4(colorSand, 1.0);
 				}
 
-				if (angle >= 0.0 && angle < 40.0 && vUv.y > 0.2 && vUv.y < 0.4) {
+				if (angle >= 0.0 && angle < 50.0 && vUv.y > 0.1 && vUv.y < 0.3) {
 					color = vec4(colorGrass, 1.0);
 				}
 
-				if (angle >= 40.0 && vUv.y > 0.05 && vUv.y < 0.8) {
+				if (angle >= 30.0 && vUv.y > 0.05 && vUv.y < 0.8) {
 					color = vec4(colorRock, 1.0);
 				}
 
-				if (vUv.y > 0.85) {
-					color = vec4(colorSnow, 1.0);
+				if (angle <= 50.0 && vUv.y > 0.75) {
+					color = vec4(mix(colorRock, colorSnow, vUv.y), 1.0);
 				}
 
 			

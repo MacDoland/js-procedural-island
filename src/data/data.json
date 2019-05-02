@@ -4,25 +4,59 @@
 			"name": "default",
 			"type": "custom",
 			"color": "0x5face3"
+		},
+		{
+			"name": "ocean",
+			"type": "ocean",
+			"color": "0x5face3"
 		}
 	],
-	"geometry": [{
-		"name": "default-plane",
-		"type": "plane",
-		"size": {
-			"x": 20,
-			"y": 20
+	"geometry": [
+		{
+			"name": "default-plane",
+			"type": "plane",
+			"size": {
+				"x": 20,
+				"y": 20
+			},
+			"segments": {
+				"x": 511,
+				"y": 511
+			}
 		},
-		"segments": {
-			"x": 511,
-			"y": 511
+		{
+			"name": "ocean-plane",
+			"type": "plane",
+			"size": {
+				"x": 20,
+				"y": 20
+			},
+			"segments": {
+				"x": 511,
+				"y": 511
+			}
 		}
-	}],
+	],
 	"objects": [
 		{
 			"name": "ground",
 			"geometry": "default-plane",
-			"material": "default"
+			"material": "default",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			}
+		},
+		{
+			"name": "ocean",
+			"geometry": "ocean-plane",
+			"material": "ocean",
+			"position": {
+				"x": 0,
+				"y": 0.05,
+				"z": 0
+			}
 		}
 	]
 }

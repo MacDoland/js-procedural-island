@@ -16,7 +16,7 @@ canvas {
 
 #noise-canvas {
     position: fixed;
-    visibility: hidden;
+  /*  visibility: hidden;*/
     right: 0;
     top: 0;
     width: 128px;

@@ -19,12 +19,10 @@ import data from '../data/data.json';
 	let renderer = new Renderer(scene.scene, camera.instance);
 	let canvas = renderer.getElement();
 	let controls = new Controls(camera.instance, canvas);
-	let controlPanel = new ControlPanel('#ui-control-panel');
+	//let controlPanel = new ControlPanel('#ui-control-panel');
 	let heightMap = new HeightMap(document.getElementById('noise-canvas'));
 	let meshes = [];
 
-
-	
 	data.objects.forEach((item) => {
 		let geometry = architect.get(item.geometry).geometry;
 		geometry.computeBoundingBox();
@@ -32,6 +30,7 @@ import data from '../data/data.json';
 		let material = artist.get(item.material).material;
 
 		if (item.material === 'default' ) {
+			//material = artist.getDefaultMaterial();
 			material = artist.customIslandMaterial(geometry.boundingBox);
 		}
 		
@@ -53,38 +52,17 @@ import data from '../data/data.json';
 
 
 	controls.addEventListener('change', (update) => {
-		controlPanel.updateCameraPosition(update.position);
+		//controlPanel.updateCameraPosition(update.position);
 	});
 
 	controls.addEventListener('change', (update) => {
-		controlPanel.updateCameraRotation(update.rotation);
+		//controlPanel.updateCameraRotation(update.rotation);
 	});
 
 	var light = new THREE.AmbientLight(0x404040, 4); // soft white light
 	scene.scene.add(light);
 
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-	directionalLight.castShadow = true;
-	directionalLight.position.x = 10;
-	directionalLight.position.y = 7.5;
-	directionalLight.position.z = 5;
-	directionalLight.target.position.set(0, 0, 0);
-
-	//Set up shadow properties for the light
-	directionalLight.shadow.mapSize.width = 2048;  // default
-	directionalLight.shadow.mapSize.height = 2048; // default
-
-	directionalLight.shadow.camera.near = 1;
-	directionalLight.shadow.camera.far = 30;
-	directionalLight.shadow.camera.left = -15;
-	directionalLight.shadow.camera.bottom = -15;
-	directionalLight.shadow.camera.right = 15;
-	directionalLight.shadow.camera.top = 15;
-
-	//var shadowCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-	//shadowCameraHelper.visible = true;
-	//scene.scene.add(shadowCameraHelper);
-
+	var directionalLight = artist.setupDirectionalLight();
 	scene.scene.add(directionalLight);
 
 	let getColour = function (height) {
@@ -96,7 +74,7 @@ import data from '../data/data.json';
 		return colour;
 	}
 
-	controlPanel.updateProgress(0);
+	//controlPanel.updateProgress(0);
 	//architect.clearHeights(meshes[0].geometry);
 	let mesh = meshes[0];
 	let geometry = architect.applyHeightmap(mesh.geometry, heightMap);
@@ -119,7 +97,9 @@ import data from '../data/data.json';
 
 	let morphIndex = 0;
 	let generationInProgress = false;
-	document.getElementById('terrain-generate').addEventListener('click', function () {
+
+
+	function generate(){
 		if (!generationInProgress) {
 			generationInProgress = true;
 			geometry = mesh.geometry.clone();
@@ -161,13 +141,18 @@ import data from '../data/data.json';
 					mesh.geometry = geometry;
 					mesh.morphTargetInfluences[0] = 0;
 					generationInProgress = false;
-
-			//		let erosion = new Erosion();
-			//		erosion.erode(mesh.geometry, 512, 512);
-			//		mesh.geometry.attributes.position.needsUpdate = true;
 				}
 			};
 			process(generator);
 		}
+	}
+
+	//document.getElementById('terrain-generate').addEventListener('click', generate);
+
+	document.addEventListener('keypress', (event) => {
+		if(event.keyCode === 32){
+			generate();
+		}
 	});
+
 })();

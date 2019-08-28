@@ -38,6 +38,37 @@ class Artist {
 		return new THREE.MeshLambertMaterial({color: 0x021d33, transparent: true, opacity: 0.85});
 	}
 
+	getDefaultMaterial() {
+		return new THREE.MeshStandardMaterial({
+			color: 0x9c9c9c,
+			/*vertexColors: THREE.VertexColors,*/
+			roughness: 1.0,
+			flatShading: true,
+			morphTargets: true
+		});
+	}
+
+	setupDirectionalLight() {
+		var directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+		directionalLight.castShadow = true;
+		directionalLight.position.x = 10;
+		directionalLight.position.y = 7.5;
+		directionalLight.position.z = 5;
+		directionalLight.target.position.set(0, 0, 0);
+
+		//Set up shadow properties for the light
+		directionalLight.shadow.mapSize.width = 2048;  // default
+		directionalLight.shadow.mapSize.height = 2048; // default
+
+		directionalLight.shadow.camera.near = 1;
+		directionalLight.shadow.camera.far = 30;
+		directionalLight.shadow.camera.left = -15;
+		directionalLight.shadow.camera.bottom = -15;
+		directionalLight.shadow.camera.right = 15;
+		directionalLight.shadow.camera.top = 15;
+		return directionalLight;
+	}
+
 	customIslandMaterial(boundingBox) {
 		return new THREE.ShaderMaterial({
 			uniforms: THREE.UniformsUtils.merge([
